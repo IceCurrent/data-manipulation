@@ -1,0 +1,16 @@
+ticker,name,sector,currency,lot_size
+AAPL,Apple Inc,Technology,USD,1
+AAPL,APPLE INC,Technology,USD,1
+BAC,Bank of America Corp,Financials,USD,1
+GS,Goldman Sachs Group Inc,Financials,USD,1
+JPM,JPMorgan Chase & Co,Financials,USD,1
+JPM,JPMORGAN CHASE & CO,Financials,USD,1
+KO,Coca-Cola Co,Staples,USD,1
+MSFT,Microsoft Corp,Technology,USD,1
+NVDA,NVIDIA Corp,Technology,USD,1
+PG,Procter & Gamble Co,Staples,USD,1
+SAP.DE,SAP SE,Technology,EUR,1
+SHEL.L,Shell plc,Energy,GBP,1
+SHEL.L,SHELL PLC,Energy,GBP,1
+TTE.PA,TotalEnergies SE,Energy,EUR,1
+XOM,Exxon Mobil Corp,Energy,USD,1

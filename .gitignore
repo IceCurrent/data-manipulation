@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Packaging and coverage
+.build/
+dist/
+.eggs/
+*.egg-info/
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+
+# Type checkers and linters
+.mypy_cache/
+.pyre/
+.ruff_cache/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
