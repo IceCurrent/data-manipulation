@@ -26,7 +26,23 @@ def add_volume_vs_ticker_mean(prices: pd.DataFrame) -> pd.DataFrame:
     -------
     A copy of `prices` with one extra float column. Same rows, same order.
     """
-    raise NotImplementedError
+    prices = prices.dropna(subset=['volume'], axis=0)
+    d = prices.groupby('ticker') # groupby colors each row of the df into it's block color, to show the association with
+    # the block. Each row belongs to a group (or block), and gets a color same as the rest of the rows in the block
+    # nothing is copied yet, just the coloring scheme gets stored in memory
+
+    prices['vol_vs_mean'] = prices['volume'] - d['volume'].transform('mean')
+
+    # agg function, collapses the entire block into a row with the aggregated value, so n-row data goes to k-row data
+    # where k is the number of distinct groups
+
+    # transform, calculates the aggregated values and assign to each of the colored row of block without collapsing
+    # or we can say it's the aggregate method combined with a broadcast, which keeps the row order same
+
+    print(prices)
+
+    return prices
+
 
 
 def add_share_of_ticker_notional(trades: pd.DataFrame) -> pd.DataFrame:
@@ -42,7 +58,14 @@ def add_share_of_ticker_notional(trades: pd.DataFrame) -> pd.DataFrame:
     A copy of `trades` with a `notional` column (as in P02) and a
     `share_of_ticker` float column. Same rows, same order.
     """
-    raise NotImplementedError
+    trades['notional'] = trades['qty'] * trades['price']
+    d = trades.groupby('ticker')
+
+    trades['total_vol'] = d['notional'].transform('sum')
+    trades['share_of_ticker'] = trades['notional'] / trades['total_vol']
+
+    trades = trades.drop(columns=['total_vol'])
+    return trades
 
 
 def add_cross_sectional_zscore(prices: pd.DataFrame) -> pd.DataFrame:
@@ -55,4 +78,13 @@ def add_cross_sectional_zscore(prices: pd.DataFrame) -> pd.DataFrame:
     -------
     A copy of `prices` with one extra float column. Same rows, same order.
     """
-    raise NotImplementedError
+    d = prices.groupby('date')
+
+    prices['std'] = d['volume'].transform('std')
+    prices['mean'] = d['volume'].transform('mean')
+
+    prices['vol_z'] = (prices['volume'] - prices['mean'])/prices['std']
+
+    prices = prices.drop(columns=['std', 'mean'])
+
+    return prices
