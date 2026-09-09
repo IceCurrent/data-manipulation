@@ -25,7 +25,11 @@ def close_panel(prices: pd.DataFrame) -> pd.DataFrame:
     ticker sorted ascending (columns name 'ticker'), values are closes.
     Dates where a ticker did not trade are NaN.
     """
-    raise NotImplementedError
+
+    prices = prices[['date', 'ticker', 'close']]
+
+    long_df = prices.pivot(index='date', columns='ticker', values='close')
+    return long_df
 
 
 def sector_avg_volume(prices: pd.DataFrame, ref: pd.DataFrame) -> pd.DataFrame:
@@ -39,7 +43,21 @@ def sector_avg_volume(prices: pd.DataFrame, ref: pd.DataFrame) -> pd.DataFrame:
     DataFrame indexed by date ascending, one column per sector sorted
     ascending, float values.
     """
-    raise NotImplementedError
+    ref = ref.drop_duplicates(subset=['ticker', 'sector'])
+    merged = pd.merge(prices, ref, on='ticker', how='left')
+    df = merged[['date', 'volume', 'sector']]
+
+    df = df.groupby(['date', 'sector']).mean()
+    df = df.reset_index(drop=False)
+    df = df.sort_values(by=['sector'])
+    
+    df = df.pivot(index='date', columns='sector', values='volume')
+
+
+    df = df.sort_index()
+   
+    print(df)
+    return df
 
 
 def melt_risk(risk_wide: pd.DataFrame) -> pd.DataFrame:
@@ -53,4 +71,16 @@ def melt_risk(risk_wide: pd.DataFrame) -> pd.DataFrame:
     DataFrame with columns exactly ['date', 'book', 'factor', 'exposure'],
     sorted by date, book, factor, with a fresh 0..n-1 index.
     """
-    raise NotImplementedError
+    # mask = risk_wide.isna().any(axis=1)
+    # df = risk_wide[mask]
+
+    # df = risk_wide.dropna(subset=['MKT', 'SIZE', 'VALUE', 'MOM', 'QUALITY'])
+    df = risk_wide.melt(id_vars=['date', 'book'], var_name='factor', value_name='exposure') #id_vars: columns to keep as is
+    df = df.dropna(subset=['exposure'])
+    df = df.sort_values(by=['date', 'book', 'factor'])
+
+    df = df.reset_index(drop=True)
+
+
+    print(df)
+    return df
